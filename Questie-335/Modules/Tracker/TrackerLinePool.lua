@@ -63,6 +63,9 @@ function TrackerLinePool.Initialize(questFrame)
         line.label:SetJustifyH("LEFT")
         line.label:SetJustifyV("TOP")
         line.label:SetPoint("TOPLEFT", line)
+        line.label.GetUnboundedStringWidth = QuestieCompat.GetUnboundedStringWidth
+        line.label.GetWrappedWidth = line.label.GetWidth
+        line.label.GetNumLines = QuestieCompat.GetNumLines
         line.label:Hide()
 
         -- autoadjust parent size for clicks

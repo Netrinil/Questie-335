@@ -534,6 +534,8 @@ function QuestieTracker:Enable()
     Questie.db.profile.trackerEnabled = true
     QuestieTracker.started = false
     QuestieTracker.Initialize()
+    --QuestieCompat.QuestieTracker_Initialize(trackerQuestFrame)
+    QuestieTracker:Update()
     ReloadUI()
 end
 
@@ -1728,6 +1730,7 @@ function QuestieTracker:Update()
             local taskText = task["text"]
             local taskReq3 = task["req3"]
             local taskReq2 = task["req2"]
+            local taskProg = GetPerkTaskProg(pta1)
             
             if perkUnlock ~= taskId then
                 zoneName = PerkMgrTaskHeader[taskHeader]["text"]
@@ -1925,11 +1928,12 @@ function QuestieTracker:Update()
                                 :gsub('$3d', '|cffC63935' .. tostring(taskReq3 or "") .. '|r')
                                 :gsub('$3D', '|cffC63935' .. tostring(taskReq3 or "") .. '|r')
                                 :gsub('$n', '\n\n')
+                                :gsub('$r', '|cffC63935' .. tostring(UnitLevel("player")-3) .. '|r')
                                 :gsub('$c', '|cffC63935')
                                 :gsub('$C', '|r')
 
                                 -- Set Objective text
-                                line.label:SetText(formattedText)
+                                line.label:SetText("("..taskProg.."/"..taskReq0..") "..formattedText)
 
                                 -- Check and measure Objective text width and update tracker width
                                 --QuestieTracker:UpdateWidth(line.label:GetUnboundedStringWidth() + objectiveMarginLeft + trackerMarginRight)

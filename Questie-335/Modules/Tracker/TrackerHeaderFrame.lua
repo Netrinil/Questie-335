@@ -177,6 +177,7 @@ function TrackerHeaderFrame.Initialize(baseFrame)
     trackedQuests:Hide()
 
     headerFrame.trackedQuests = trackedQuests
+    headerFrame.trackedQuests.label.GetUnboundedStringWidth = QuestieCompat.GetUnboundedStringWidth
 
     if Questie.db.profile.trackerHeaderEnabled or (not QuestieTracker:HasQuest()) then
         headerFrame:SetSize(1, Questie.db.profile.trackerFontSizeHeader) -- Width is updated later on
