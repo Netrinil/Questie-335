@@ -648,7 +648,11 @@ function QuestieMap:DrawWorldIcon(data, areaID, x, y, showFlag)
 
         function iconMinimap:FadeLogic()
             local profile = Questie.db.profile
-            if self.miniMapIcon and self.x and self.y and self.texture and self.UiMapID and self.texture.SetVertexColor and HBD and HBD.GetPlayerZonePosition and QuestieLib and QuestieLib.Euclid then
+            if self.miniMapIcon and self.x and self.y and self.texture
+                and self.UiMapID and self.texture.SetVertexColor
+                and HBD and HBD.GetPlayerZonePosition
+                and QuestieLib and QuestieLib.Euclid then
+
                 if (QuestieMap.playerX and QuestieMap.playerY) then
                     local x, y
                     if not self.worldX then
@@ -659,16 +663,26 @@ function QuestieMap:DrawWorldIcon(data, areaID, x, y, showFlag)
                         x = self.worldX
                         y = self.worldY
                     end
-                    if (x and y) then
-                        --Very small value before, hard to work with.
-                        local distance = QuestieLib:Euclid(QuestieMap.playerX, QuestieMap.playerY, x, y) / 10;
 
+                    if (x and y) then
+                        -- Only recompute distance if player has moved
+                        local pX, pY = QuestieMap.playerX, QuestieMap.playerY
+                        if self.lastDistance == nil
+                            or self.lastPlayerX ~= pX
+                            or self.lastPlayerY ~= pY then
+                            self.lastDistance = math_sqrt(QuestieLib:Euclid(pX, pY, x, y)) / 10
+                            self.lastPlayerX = pX
+                            self.lastPlayerY = pY
+                        end
+
+                        local distance = self.lastDistance
+
+                        -- Original fade logic
                         if (distance > profile.fadeLevel) then
-                            local fade = 1 - (math.min(10, (distance - profile.fadeLevel)) * normalizedValue);
+                            local fade = 1 - (math.min(10, (distance - profile.fadeLevel)) * normalizedValue)
                             self:SetFade(fade)
                         elseif (distance < profile.fadeOverPlayerDistance) and profile.fadeOverPlayer then
                             local fadeAmount = profile.fadeOverPlayerLevel + distance * (1 - profile.fadeOverPlayerLevel) / profile.fadeOverPlayerDistance
-                            -- local fadeAmount = math.max(fadeAmount, 0.5);
                             if self.faded and fadeAmount > profile.iconFadeLevel then
                                 fadeAmount = profile.iconFadeLevel
                             end
