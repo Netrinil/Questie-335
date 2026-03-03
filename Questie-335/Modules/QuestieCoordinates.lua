@@ -44,9 +44,6 @@ local function GetMiniWorldMapTitleText()
 end
 
 function QuestieCoords:WriteCoords()
-    if not ((Questie.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible()) or (Questie.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible())) then
-        return -- no need to write coords
-    end
     local isInInstance, instanceType = IsInInstance()
 
     if isInInstance and "pvp" ~= instanceType then
@@ -132,7 +129,7 @@ function QuestieCoords:Initialize()
 end
 
 function QuestieCoords:Update()
-    if (Questie.db.profile.minimapCoordinatesEnabled) or (Questie.db.profile.mapCoordinatesEnabled) then
+    if ((Questie.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible()) or (Questie.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible())) then
         QuestieCoords.WriteCoords();
     end
 end
