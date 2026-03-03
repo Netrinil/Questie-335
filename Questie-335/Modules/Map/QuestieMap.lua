@@ -670,7 +670,7 @@ function QuestieMap:DrawWorldIcon(data, areaID, x, y, showFlag)
                         if self.lastDistance == nil
                             or self.lastPlayerX ~= pX
                             or self.lastPlayerY ~= pY then
-                            self.lastDistance = math_sqrt(QuestieLib:Euclid(pX, pY, x, y)) / 10
+                            self.lastDistance = QuestieLib:Euclid(pX, pY, x, y) / 10
                             self.lastPlayerX = pX
                             self.lastPlayerY = pY
                         end
