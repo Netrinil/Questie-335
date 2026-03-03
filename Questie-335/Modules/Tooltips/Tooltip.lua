@@ -414,6 +414,5 @@ function QuestieTooltips:Initialize()
         end
     end)
 end
-end
 
 return QuestieTooltips
