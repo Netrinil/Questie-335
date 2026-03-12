@@ -516,7 +516,7 @@ function QuestieTracker:HasQuest()
         end
     end
     if Questie.db.profile.listPerks then
-        if #Questie.db.char.trackedPerkIds ~= 0 then
+        if Questie.db.char.trackedPerkIds ~= {} then
             hasQuest = true
         end
     end
