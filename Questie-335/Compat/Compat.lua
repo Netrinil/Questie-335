@@ -506,7 +506,7 @@ function QuestieCompat.CalculateNextResetTime()
 
     Questie:Debug(Questie.DEBUG_DEVELOP, "[CalculateNextResetTime] GetQuestResetTime: ", timeUntilReset)
     if timeUntilReset <= 0 then
-        Questie:Error("GetQuestResetTime() returns an invalid value: "..timeUntilReset..". Please report on Github!")
+        --Questie:Error("GetQuestResetTime() returns an invalid value: "..timeUntilReset..". Please report on Github!")
         return
     end
     Questie.db.profile.dailyResetTime = Questie.db.profile.dailyResetTime or (currentTime + timeUntilReset)
