@@ -77,6 +77,7 @@ end
 
 local trackedPerks = {}
 local trackedPerkIds = {}
+local untrackedPerks = {}
 
 local isFirstRun = true
 local allowFormattingUpdate = false
@@ -116,6 +117,9 @@ function QuestieTracker.Initialize()
     end
     if (not Questie.db.char.trackedPerkIds) then
         Questie.db.char.trackedPerkIds = {}
+    end
+    if (not Questie.db.char.untrackedPerks) then
+        Questie.db.char.untrackedPerks = {}
     end
     if (not Questie.db.profile.TrackerWidth) then
         Questie.db.profile.TrackerWidth = 0
@@ -272,21 +276,59 @@ function QuestieTracker.Initialize()
     end)
 end
 
+QuestieTracker.perkClasses = {
+    [1] = 'Warrior', 
+    [2] = 'Paladin', 
+    [3] = 'Hunter', 
+    [4] = 'Rogue',
+    [5] = 'Priest', 
+    [6] = 'Death Knight', 
+    [7] = 'Shaman', 
+    [8] = 'Mage',
+    [9] = 'Warlock', 
+    [11] = 'Druid',
+    [15] = 'Offensive',
+    [16] = 'Defensive', 
+    [17] = 'Support',
+    [18] = 'Utility', 
+    [19] = 'Misc'
+}
+
 function QuestieTracker:GetActivePerks()
     local tempPerks = {}
+    local tempUntracked = {}
 
     for perkId, perk in pairs(PerkMgrPerks) do
         if perkId then 
-            -- if active and not misc perk
-            if GetPerkActive(perkId) == true and perk["cat"] ~= 19 and PerkMgrTaskAll[GetPerkTaskAssign2(GetPerkTaskAssign1(perkId))] then
-                trackedPerkIds[perkId] = true
-                tempPerks[perkId] = perk
-            else
-                --Questie.db.char.trackedPerkIds[perkId] = nil
+            local perkTaskId = GetPerkTaskAssign2(GetPerkTaskAssign1(perkId))
+            local perkTask = PerkMgrTaskAll[perkTaskId]
+            
+            -- if not misc perk and not max rank or not unlocked
+            if perk["cat"] ~= 19 and perkTask then
+                -- print("Perk: "..perk["name"]..", PerkId: "..perkId)
+                local perkTaskHeaderTable = PerkMgrTaskHeader[perkTask["header"]] or {}
+                local class1 = CMCGetClassAt(1) or 0
+                local class2 = CMCGetClassAt(2) or 0
+                -- if the perk is active
+                if GetPerkActive(perkId) then
+                    trackedPerkIds[perkId] = true
+                    tempPerks[perkId] = perk
+                -- if perk is offensive, defensive, support, utility, or matches one of our classes' categories
+                elseif (perk["cat"] >= 15 or perk["cat"] == class1 or perk["cat"] == class2) then
+                    -- if the perk doesn't require a class we don't have
+                    if bit.band(perk["req"], class1) ~= 0 or bit.band(perk["req"], class2) ~= 0 or perk["req"] == 0 then
+                        -- if the perk is unlocked
+                        if perkTaskId ~= perk.unlock then
+                            --print("Perk: "..perk["name"]..", PerkId: "..perkId.." being labelled inactive")
+                            tempUntracked[perkTaskHeaderTable["text"]] = tempUntracked[perkTaskHeaderTable["text"]] or {}
+                            table.insert(tempUntracked[perkTaskHeaderTable["text"]], perk["name"])
+                        end
+                    end
+                end
             end
         end
     end
-    return tempPerks
+    return tempPerks, tempUntracked
 end
 
 function QuestieTracker:ResetLocation()
@@ -1666,13 +1708,15 @@ function QuestieTracker:Update()
     local _UpdatePerks = function()
         if (not Questie.db.profile.listPerks) then return end
 
-        trackedPerks = QuestieTracker:GetActivePerks()
+        trackedPerks,untrackedPerks = QuestieTracker:GetActivePerks()
 
         -- if there's at least 1 tracked perk
         if trackedPerks ~= {} then
             local tempPerks = trackedPerks
+            local tempUntrackedPerks = untrackedPerks
             -- wipe any old data
             Questie.db.char.trackedPerkIds = {}
+            Questie.db.char.untrackedPerks = {}
 
             -- Add perk to the tracker.
             for perkId in pairs(tempPerks) do
@@ -1680,6 +1724,19 @@ function QuestieTracker:Update()
                     Questie.db.char.trackedPerkIds[perkId] = true
                 end
             end
+
+            --print("Transferring tempUntrackedPerks")
+            for headerKey, taskHeaderTable in pairs(tempUntrackedPerks) do
+                Questie.db.char.untrackedPerks[headerKey] = {}
+                --print("Transferring "..headerKey)
+                for perkKey, perkName in pairs(taskHeaderTable) do
+                    if perkName then
+                        --print("Inserting "..perkName.." at index "..perkName.." in header "..headerKey)
+                        Questie.db.char.untrackedPerks[headerKey][perkName] = perkName
+                    end
+                end
+            end
+            --print("Transferring tempUntrackedPerks COMPLETE")
         end
         WatchFrame_Update()
 
@@ -1695,6 +1752,22 @@ function QuestieTracker:Update()
                     trackedPerkIds[perkId] = true
                 end
             end
+        end
+
+        if Questie.db.char.untrackedPerks ~= untrackedPerks then
+            --print("untrackedPerks not synced")
+            untrackedPerks = {}
+            for headerKey, taskHeaderTable in pairs(Questie.db.char.untrackedPerks) do
+                untrackedPerks[headerKey] = {}
+                --print("Header "..headerKey.." found")
+                for perkKey, perkName in pairs(taskHeaderTable) do
+                    --print("Perk "..perkName.." found")
+                    untrackedPerks[headerKey][perkName] = perkName
+                end
+            end
+        end
+        if Questie.db.char.untrackedPerks ~= untrackedPerks then
+            --print("untrackedPerks sync failed")
         end
 
         -- Begin populating the tracker with tracked perks
@@ -1754,6 +1827,7 @@ function QuestieTracker:Update()
                     -- Set Line Mode, Types, Clickers
                         line:SetMode("zone")
                         line:SetZone(zoneName)
+                        line:SetPerkZone(zoneName)
                         line.expandQuest:Hide()
                         line.criteriaMark:Hide()
                         line.playButton:Hide()
@@ -1772,6 +1846,7 @@ function QuestieTracker:Update()
                             local text = zoneName == "Perks" and l10n("Perks") or zoneName
                             line.label:SetText("|cFFC0C0C0" .. text .. "|r")
                         end
+                        line:SetPerkZone(zoneName)
 
                         -- Checks the minAllQuestsInZone[zone] table and if empty, zero out the table.
                         if Questie.db.char.minAllQuestsInZone[zoneName] ~= nil and not Questie.db.char.minAllQuestsInZone[zoneName].isTrue and not Questie.db.char.collapsedZones[zoneName] then
@@ -1806,7 +1881,7 @@ function QuestieTracker:Update()
 
                         -- Adds 4 pixels between Zone and first Perk Title
                         line:SetHeight(line.label:GetHeight() + 4)
-
+                            
                         -- Set Zone states
                         line:Show()
                         line.label:Show()

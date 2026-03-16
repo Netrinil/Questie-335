@@ -96,6 +96,18 @@ function TrackerLinePool.Initialize(questFrame)
             end
         end
 
+        function line:SetPerkZone(ZoneName)
+            if type(ZoneName) == "string" then
+                self.PerkZone = ZoneName
+            elseif type(ZoneName) == "number" then
+                self.PerkZone = TrackerUtils:GetZoneNameByID(ZoneName)
+            end
+        end
+
+        function line:GetZone()
+            return self.expandZone.zoneId
+        end
+
         function line:SetQuest(Quest)
             if type(Quest) == "number" then
                 Quest = {
@@ -172,12 +184,29 @@ function TrackerLinePool.Initialize(questFrame)
 
         line:SetScript("OnEnter", function(self)
             TrackerLinePool.OnHighlightEnter(self)
+            GameTooltip:SetOwner(line, "ANCHOR_LEFT")   -- or ANCHOR_RIGHT, ANCHOR_TOPLEFT, etc.
+            -- GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -10, 0)  -- example with offset
+    
+            GameTooltip:ClearLines()
+            --local zoneName = line.label:GetText():gsub("|cFFC0C0C0",""):gsub(" +|r","")
+            local perkZone = line.PerkZone
+            if perkZone then
+                if Questie.db.char.untrackedPerks[perkZone] ~= nil then
+                    GameTooltip:AddLine(perkZone, 1, 1, 1) -- title
+                    for perkKey, perkName in pairs(Questie.db.char.untrackedPerks[perkZone]) do 
+                        GameTooltip:AddLine(perkName, 0.5, 0.5, 0.5)
+                    end 
+                end
+                GameTooltip:Show()
+            end
             TrackerFadeTicker.Unfade()
         end)
 
         line:SetScript("OnLeave", function(self)
             TrackerLinePool.OnHighlightLeave(self)
             TrackerFadeTicker.Fade()
+
+            GameTooltip:Hide()
         end)
 
         -- create objective complete criteria marks
@@ -311,11 +340,29 @@ function TrackerLinePool.Initialize(questFrame)
         expandZone:SetScript("OnEnter", function(self)
             TrackerLinePool.OnHighlightEnter(self)
             TrackerFadeTicker.Unfade()
+            
+            GameTooltip:SetOwner(line, "ANCHOR_LEFT")   -- or ANCHOR_RIGHT, ANCHOR_TOPLEFT, etc.
+            -- GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -10, 0)  -- example with offset
+    
+            GameTooltip:ClearLines()
+            --local zoneName = line.label:GetText():gsub("|cFFC0C0C0",""):gsub(" +|r","")
+            local perkZone = line.PerkZone
+            if perkZone then
+                if Questie.db.char.untrackedPerks[perkZone] ~= nil then
+                    GameTooltip:AddLine(perkZone, 1, 1, 1) -- title
+                    for perkKey, perkName in pairs(Questie.db.char.untrackedPerks[perkZone]) do 
+                        GameTooltip:AddLine(perkName, 0.5, 0.5, 0.5)
+                    end 
+                end
+                GameTooltip:Show()
+            end
         end)
 
         expandZone:SetScript("OnLeave", function(self)
             TrackerLinePool.OnHighlightLeave(self)
             TrackerFadeTicker.Fade()
+
+            GameTooltip:Hide()
         end)
 
         expandZone:Hide()
