@@ -772,6 +772,7 @@ function TrackerLinePool.ResetLinesForChange()
 
     for _, line in pairs(linePool) do
         line.mode = nil
+        line.PerkZone = nil
         line.trackTimedQuest = nil
         if line.expandQuest then
             line.expandQuest.mode = nil
@@ -920,6 +921,7 @@ function TrackerLinePool.HideUnusedLines()
             line:Hide()
             line.mode = nil
             line.ZoneId = nil
+            line.PerkZone = nil
             line.Quest = nil
             line.Objective = nil
             line.Button = nil
