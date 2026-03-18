@@ -413,7 +413,7 @@ function QuestieAnnounce:ItemLooted(text, notPlayerName, _, _, playerName)
         local itemName = GetItemInfo(itemId)
         if attunableItemsConsumedByQuests[itemId] and IsAttunableBySomeone and IsAttunableBySomeone(itemId) and not Questie.db.profile.questieShutUp then
             if CanAttuneItemHelper and CanAttuneItemHelper(itemId) > 0 then
-                if GetItemAttuneForge and GetItemAttuneForge(id) < 0 then 
+                if GetItemAttuneForge and GetItemAttuneForge(itemId) < 0 then 
                     SendChatMessage("Looted Attunable Item: "..itemName.."!")
                     --print("Attunable quest objective found")
                 end
