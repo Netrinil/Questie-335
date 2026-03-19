@@ -178,7 +178,6 @@ Questie.icons = {
     ["object_mono"] = QuestieLib.AddonPath.."Icons\\object_mono.tga",
     ["route"] = QuestieLib.AddonPath.."Icons\\route.tga",
     ["slay_mono"] = QuestieLib.AddonPath.."Icons\\slay_mono.tga",
-    ["sod_rune"] = QuestieLib.AddonPath.."Icons\\sod_rune.tga",
     ["startend"] = QuestieLib.AddonPath.."Icons\\startend.tga",
     ["startendstart"] = QuestieLib.AddonPath.."Icons\\startendstart.tga",
     ["tracker_clean"] = QuestieLib.AddonPath.."Icons\\tracker_clean.tga",
@@ -209,7 +208,6 @@ Questie.ICON_TYPE_EVENTQUEST_COMPLETE = 14
 Questie.ICON_TYPE_PVPQUEST = 15
 Questie.ICON_TYPE_PVPQUEST_COMPLETE = 16
 Questie.ICON_TYPE_INTERACT = 17
-Questie.ICON_TYPE_SODRUNE = 18
 
 -- Load icon pathes from SavedVariables or set the default ones
 function Questie:SetIcons()
@@ -230,7 +228,6 @@ function Questie:SetIcons()
     Questie.usedIcons[Questie.ICON_TYPE_PVPQUEST] = Questie.db.profile.ICON_PVPQUEST or Questie.icons["pvpquest"]
     Questie.usedIcons[Questie.ICON_TYPE_PVPQUEST_COMPLETE] = Questie.db.profile.ICON_PVPQUEST_COMPLETE or Questie.icons["complete"]
     Questie.usedIcons[Questie.ICON_TYPE_INTERACT] = Questie.db.profile.ICON_TYPE_INTERACT or Questie.icons["interact"]
-    Questie.usedIcons[Questie.ICON_TYPE_SODRUNE] = Questie.icons["sod_rune"]
 end
 
 function Questie:GetIconNameFromPath(path)

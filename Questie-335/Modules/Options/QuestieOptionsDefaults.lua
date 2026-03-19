@@ -132,13 +132,6 @@ function QuestieOptionsDefaults:Load()
             showRaidQuests = true,
             showPvPQuests = true,
             showAQWarEffortQuests = false,
-            showSoDRunes = false,
-            showRunesOfPhase = {
-                phase1 = false,
-                phase2 = false,
-                phase3 = false,
-                phase4 = false,
-            },
             showQuestsInNpcTooltip = true,
             trackerEnabled = true,
             ldbDisplayText = "Questie",
@@ -204,7 +197,6 @@ function QuestieOptionsDefaults:Load()
             lastDailyRequestDate = "",
             questieLocale = 'enUS',
             questieLocaleDiff = false,
-            sod = {}, -- Special place for the SoD database
         }
     }
 end

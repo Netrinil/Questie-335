@@ -189,11 +189,7 @@ function QuestieOptions.tabs.advanced:Initialize()
                     end
 
                     if previousLocale ~= Questie.db.global.questieLocale then
-                        if Questie.IsSoD then
-                            Questie.db.global.sod.dbIsCompiled = nil -- recompile db with new lang if locale changed
-                        else
-                            Questie.db.global.dbIsCompiled = nil -- recompile db with new lang if locale changed
-                        end
+                        Questie.db.global.dbIsCompiled = nil -- recompile db with new lang if locale changed
                         StaticPopup_Show("QUESTIE_LANG_CHANGED_RELOAD")
                     end
                 end,
@@ -235,11 +231,7 @@ function QuestieOptions.tabs.advanced:Initialize()
 
                     Questie.db.profile.minimap.hide = optionsDefaults.profile.minimap.hide;
 
-                    if Questie.IsSoD then
-                        Questie.db.global.sod.dbIsCompiled = false
-                    else
-                        Questie.db.global.dbIsCompiled = false
-                    end
+                    Questie.db.global.dbIsCompiled = false
 
                     Questie.db.char.hidden = nil
                     Questie.db.char.hiddenDailies = optionsDefaults.char.hiddenDailies;
@@ -255,11 +247,7 @@ function QuestieOptions.tabs.advanced:Initialize()
                 name = function() return l10n('Recompile Database'); end,
                 desc = function() return l10n('Forces a recompile of the Questie database. This will also reload the UI.'); end,
                 func = function (_, _)
-                    if Questie.IsSoD then
-                        Questie.db.global.sod.dbIsCompiled = false
-                    else
-                        Questie.db.global.dbIsCompiled = false
-                    end
+                    Questie.db.global.dbIsCompiled = false
                     ReloadUI()
                 end,
             },

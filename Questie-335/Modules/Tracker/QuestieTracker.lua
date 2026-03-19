@@ -2627,11 +2627,7 @@ function QuestieTracker:AQW_Insert(index, expire)
                 QuestieQuest:PopulateObjectiveNotes(quest)
             end
         else
-            if Questie.IsSoD then
-                QuestieDebugOffer.QuestTracking(questId)
-            else
-                Questie:Error("Missing quest " .. tostring(questId) .. "," .. tostring(expire) .. " during tracker update")
-            end
+            Questie:Error("Missing quest " .. tostring(questId) .. "," .. tostring(expire) .. " during tracker update")
         end
     end
     QuestieCombatQueue:Queue(function()

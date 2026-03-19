@@ -224,11 +224,7 @@ function QuestieDB:Initialize()
         button1 = l10n("Recompile Database"),
         button2 = l10n("Don't show again"),
         OnAccept = function()
-            if Questie.IsSoD then
-                Questie.db.global.sod.dbIsCompiled = false
-            else
-                Questie.db.global.dbIsCompiled = false
-            end
+            Questie.db.global.dbIsCompiled = false
             ReloadUI()
         end,
         OnDecline = function()
@@ -243,27 +239,17 @@ function QuestieDB:Initialize()
         preferredIndex = 3
     }
 
-    -- For now we store both, the SoD database and the Era/HC database
+    -- For now we store the Era/HC database
     local npcBin, npcPtrs, questBin, questPtrs, objBin, objPtrs, itemBin, itemPtrs
-    if Questie.IsSoD then
-        npcBin = Questie.db.global.sod.npcBin
-        npcPtrs = Questie.db.global.sod.npcPtrs
-        questBin = Questie.db.global.sod.questBin
-        questPtrs = Questie.db.global.sod.questPtrs
-        objBin = Questie.db.global.sod.objBin
-        objPtrs = Questie.db.global.sod.objPtrs
-        itemBin = Questie.db.global.sod.itemBin
-        itemPtrs = Questie.db.global.sod.itemPtrs
-    else
-        npcBin = Questie.db.global.npcBin
-        npcPtrs = Questie.db.global.npcPtrs
-        questBin = Questie.db.global.questBin
-        questPtrs = Questie.db.global.questPtrs
-        objBin = Questie.db.global.objBin
-        objPtrs = Questie.db.global.objPtrs
-        itemBin = Questie.db.global.itemBin
-        itemPtrs = Questie.db.global.itemPtrs
-    end
+
+    npcBin = Questie.db.global.npcBin
+    npcPtrs = Questie.db.global.npcPtrs
+    questBin = Questie.db.global.questBin
+    questPtrs = Questie.db.global.questPtrs
+    objBin = Questie.db.global.objBin
+    objPtrs = Questie.db.global.objPtrs
+    itemBin = Questie.db.global.itemBin
+    itemPtrs = Questie.db.global.itemPtrs
 
     QuestieDB.QueryNPC = QuestieDBCompiler:GetDBHandle(npcBin, npcPtrs, QuestieDBCompiler:BuildSkipMap(QuestieDB.npcCompilerTypes, QuestieDB.npcCompilerOrder), QuestieDB.npcKeys, QuestieDB.npcDataOverrides)
     QuestieDB.QueryQuest = QuestieDBCompiler:GetDBHandle(questBin, questPtrs, QuestieDBCompiler:BuildSkipMap(QuestieDB.questCompilerTypes, QuestieDB.questCompilerOrder), QuestieDB.questKeys, QuestieDB.questDataOverrides)
@@ -514,11 +500,6 @@ function QuestieDB.IsLevelRequirementsFulfilled(questId, minLevel, maxLevel, pla
     if (Questie.db.profile.lowLevelStyle ~= Questie.LOWLEVEL_RANGE) and
         minLevel > requiredLevel and
         QuestieEvent.activeQuests[questId]  then
-        return true
-    end
-
-    if (Questie.IsSoD == true) and (QuestieDB.IsSoDRuneQuest(questId) == true) and (requiredLevel <= playerLevel) then
-        -- Season of Discovery Rune quests are still shown when trivial
         return true
     end
 
@@ -1740,7 +1721,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                         questID = id
                     end
                 end
-            elseif Questie.IsSoD == false then -- don't print these errors in SoD, as we expect missing data when new quests release; debug offers will handle these scenarios instead
+            else
                 Questie:Error("Database mismatch! No entries found that match quest name. Please report this on Github or Discord!")
                 Questie:Error("Queststarter is: " .. unit_type .. " " .. questgiverID)
                 Questie:Error("Quest name is: " .. name)
@@ -1753,7 +1734,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                         questID = id
                     end
                 end
-            elseif Questie.IsSoD == false then -- don't print these errors in SoD, as we expect missing data when new quests release; debug offers will handle these scenarios instead
+            else
                 Questie:Error("Database mismatch! No entries found that match quest name. Please report this on Github or Discord!")
                 Questie:Error("Questender is: " .. unit_type .. " " .. questgiverID)
                 Questie:Error("Quest name is: " .. name)

@@ -86,18 +86,6 @@ local questStateLocales = {
         ["esES"] = "JcJ",
         ["frFR"] = "JcJ",
     },
-    ["Rune"] = {
-        ["ptBR"] = "Runa",
-        ["ruRU"] = "Руна",
-        ["deDE"] = true,
-        ["koKR"] = "룬",
-        ["esMX"] = "Runa",
-        ["enUS"] = true,
-        ["zhCN"] = false,
-        ["zhTW"] = "符文",
-        ["esES"] = "Runa",
-        ["frFR"] = true,
-    },
 }
 
 for k, v in pairs(questStateLocales) do

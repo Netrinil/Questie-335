@@ -191,20 +191,10 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     local dbCompiled = false
 
     local dbIsCompiled, dbCompiledOnVersion, dbCompiledLang
-    if Questie.IsSoD then
-        dbIsCompiled = Questie.db.global.sod.dbIsCompiled or false
-        dbCompiledOnVersion = Questie.db.global.sod.dbCompiledOnVersion
-        dbCompiledLang = Questie.db.global.sod.dbCompiledLang
-    else
-        dbIsCompiled = Questie.db.global.dbIsCompiled or false
-        dbCompiledOnVersion = Questie.db.global.dbCompiledOnVersion
-        dbCompiledLang = Questie.db.global.dbCompiledLang
-    end
 
-    if Questie.IsSoD then
-        coYield()
-        SeasonOfDiscovery.Initialize()
-    end
+    dbIsCompiled = Questie.db.global.dbIsCompiled or false
+    dbCompiledOnVersion = Questie.db.global.dbCompiledOnVersion
+    dbCompiledLang = Questie.db.global.dbCompiledLang
 
     -- Check if the DB needs to be recompiled
     if (not dbIsCompiled) or (QuestieLib:GetAddonVersionString() ~= dbCompiledOnVersion) or (l10n:GetUILocale() ~= dbCompiledLang) or (Questie.db.global.dbCompiledExpansion ~= WOW_PROJECT_ID) then
@@ -218,7 +208,7 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
         QuestieCorrections:MinimalInit()
     end
 
-    local dbCompiledCount = Questie.IsSoD and Questie.db.global.sod.dbCompiledCount or Questie.db.global.dbCompiledCount
+    local dbCompiledCount = Questie.db.global.dbCompiledCount
 
     if (not Questie.db.char.townsfolk) or (dbCompiledCount ~= Questie.db.char.townsfolkVersion) or (Questie.db.char.townsfolkClass ~= UnitClass("player")) then
         Questie.db.char.townsfolkVersion = dbCompiledCount

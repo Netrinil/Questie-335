@@ -1483,29 +1483,6 @@ function QuestieQuestBlacklist:Load()
         --[26012] = true, -- Trouble at Wyrmrest
         --[26013] = true, -- Assault on the Sanctum
 
-        ----- SoD -------------- SoD quests --------------- SoD -----
-        [78611] = true, -- A Waylaid Shipment (no longer available in P2)
-        [79100] = true, -- A Waylaid Shipment (no longer available in P2)
-        [79482] = true, -- Stolen Winter Veil Treats
-        [79483] = true, -- Stolen Winter Veil Treats
-        [79484] = true, -- You're a Mean One...
-        [79485] = true, -- You're a Mean One...
-        [79486] = true, -- A Smokywood Pastures' Thank You!
-        [79487] = true, -- A Smokywood Pastures' Thank You!
-        [79492] = true, -- Metzen the Reindeer
-        [79495] = true, -- Metzen the Reindeer
-        [79588] = true, -- Small Furry Paws
-        [79589] = true, -- Torn Bear Pelts
-        [79590] = true, -- Heavy Grinding Stone
-        [79591] = true, -- Whirring Bronze Gizmo
-        [79592] = true, -- Carnival Jerkins
-        [79593] = true, -- Coarse Weightstone
-        [79594] = true, -- Copper Modulator
-        [79595] = true, -- Carnival Boots
-        [80421] = true, -- Green Iron Bracers
-        [80422] = true, -- Green Fireworks
-        [80423] = true, -- The World's Largest Gnome!
-
         --- Automatic Overrides (for when Wowhead data is wrong)
         [13134] = false, -- Spill Their Blood
         [13136] = false, -- Jagged Shards
@@ -1529,16 +1506,6 @@ function QuestieQuestBlacklist:Load()
     if Questie.IsSoM then
         Questie:Debug(Questie.DEBUG_DEVELOP, "Blacklisting SoM quests...")
         local questsByPhase = QuestieQuestBlacklist:GetSoMQuestsToBlacklist()
-        for phase= 1, #questsByPhase do
-            for questId, _ in pairs(questsByPhase[phase]) do
-                questsToBlacklist[questId] = true
-            end
-        end
-    end
-
-    if Questie.IsSoD then
-        Questie:Debug(Questie.DEBUG_DEVELOP, "Blacklisting SoD quests...")
-        local questsByPhase = QuestieQuestBlacklist:GetSoDQuestsToBlacklist()
         for phase= 1, #questsByPhase do
             for questId, _ in pairs(questsByPhase[phase]) do
                 questsToBlacklist[questId] = true
