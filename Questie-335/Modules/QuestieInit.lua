@@ -79,8 +79,6 @@ local Tutorial = QuestieLoader:ImportModule("Tutorial")
 local WorldMapButton = QuestieLoader:ImportModule("WorldMapButton")
 ---@type AvailableQuests
 local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
----@type SeasonOfDiscovery
-local SeasonOfDiscovery = QuestieLoader:ImportModule("SeasonOfDiscovery")
 
 --- COMPATIBILITY ---
 local WOW_PROJECT_ID = QuestieCompat.WOW_PROJECT_ID

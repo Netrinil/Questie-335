@@ -1741,7 +1741,6 @@ function QuestieCompat:ADDON_LOADED(event, addon)
 	local DISABLED_MODULES = {
         "HBDHooks",
         "QuestieDebugOffer",
-        "SeasonOfDiscovery",
         "QuestieDBMIntegration"
     }
 	

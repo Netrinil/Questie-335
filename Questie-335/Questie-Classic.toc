@@ -65,8 +65,6 @@ Database\Corrections\QuestieItemBlacklist.lua
 Database\Corrections\QuestieNPCBlacklist.lua
 Database\Corrections\QuestieQuestBlacklist.lua
 Database\Corrections\HardcoreBlacklist.lua
-Database\Corrections\SeasonOfDiscovery.lua
-Database\Corrections\SoMPhases.lua
 Database\Corrections\QuestieEvent.lua
 
 # Automatic General Corrections
