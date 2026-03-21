@@ -81,11 +81,19 @@ local DMF_LOCATIONS = {
 function QuestieEvent:Load()    
     local activeEvents = {}
     local currentDate = C_DateAndTime.GetCurrentCalendarTime()["monthDay"]
+    local hour = C_DateAndTime.GetCurrentCalendarTime()["hour"]
     
     for eventIndex = 1, CalendarGetNumDayEvents(0,currentDate) do
         local eventName = CalendarGetDayEvent(0,currentDate,eventIndex)
-        print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
-        activeEvents[eventName] = true
+        if (eventName == "Kalu'ak Fishing Derby") then 
+            if (hour < 14) then
+                print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
+                activeEvents[eventName] = true
+            end
+        else            
+            print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
+            activeEvents[eventName] = true
+        end
     end
     
     for _, questData in pairs(QuestieEvent.eventQuests) do
