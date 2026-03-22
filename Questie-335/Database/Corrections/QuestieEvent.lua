@@ -90,6 +90,11 @@ function QuestieEvent:Load()
                 print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
                 activeEvents[eventName] = true
             end
+        elseif (eventName == "Strangelthorn Fishing Extravaganza") then
+            if (hour < 14) then
+                print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
+                activeEvents[eventName] = true
+            end
         else            
             print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
             activeEvents[eventName] = true
