@@ -85,13 +85,8 @@ function QuestieEvent:Load()
     
     for eventIndex = 1, CalendarGetNumDayEvents(0,currentDate) do
         local eventName = CalendarGetDayEvent(0,currentDate,eventIndex)
-        if (eventName == "Kalu'ak Fishing Derby") then 
-            if (hour < 14) then
-                print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
-                activeEvents[eventName] = true
-            end
-        elseif (eventName == "Stranglethorn Fishing Extravaganza") then
-            if (hour < 14) then
+        if (eventName == "Kalu'ak Fishing Derby" or eventName == "Stranglethorn Fishing Extravaganza") then 
+            if (hour >= 2 and hour < 14) then
                 print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
                 activeEvents[eventName] = true
             end
