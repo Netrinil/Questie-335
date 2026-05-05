@@ -70,12 +70,13 @@ local C_Calendar = QuestieCompat.C_Calendar
 local C_DateAndTime = QuestieCompat.C_DateAndTime
 
 local tinsert = table.insert
-local _WithinDates, _LoadDarkmoonFaire, _GetDarkmoonFaireLocation, _GetDarkmoonFaireLocationEra
+local _WithinDates, _LoadDarkmoonFaire, _GetDarkmoonFaireLocationOLD, _GetDarkmoonFaireLocation
 
 local DMF_LOCATIONS = {
     NONE = 0,
-    MULGORE = 1,
-    ELWYNN_FOREST = 2,
+    ELWYNN_FOREST = 1,
+    MULGORE = 2,
+    SHATTRATH = 3,
 }
 
 function QuestieEvent:Load()    
@@ -90,6 +91,9 @@ function QuestieEvent:Load()
                 print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
                 activeEvents[eventName] = true
             end
+        elseif eventName == "Darkmoon Faire" then
+            _LoadDarkmoonFaire()
+            activeEvents[eventName] = true
         else            
             print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
             activeEvents[eventName] = true
@@ -113,7 +117,7 @@ function QuestieEvent:Load()
     
     -- TODO: Also handle WotLK which has a different starting schedule
     if Questie.IsClassic then
-        _LoadDarkmoonFaire()
+        
     end
     
     -- Clear the quests to save memory
@@ -121,61 +125,35 @@ function QuestieEvent:Load()
 end
 
 ---@param dayOfMonth number
----@return boolean
-_GetDarkmoonFaireLocation = function()
+---@return integer
+_GetDarkmoonFaireLocationOLD = function()
     if C_Calendar == nil then
         -- This is a band aid fix for private servers which do not support the `C_Calendar` API.
         -- They won't see Darkmoon Faire quests, but that's the price to pay.
-        return false
+        return 0
     end
 
     local currentDate = C_DateAndTime.GetCurrentCalendarTime()
 
-    return _GetDarkmoonFaireLocationEra(currentDate)
+    return _GetDarkmoonFaireLocation(currentDate)
 end
 
-_GetDarkmoonFaireLocationEra = function(currentDate)
-    local baseInfo = C_Calendar.GetMonthInfo() -- In Era this returns `GetMinDate` (November 2004)
-    -- Calculate the offset in months from GetMinDate to make C_Calendar.GetMonthInfo return the correct month
-    local monthOffset = (currentDate.year - baseInfo.year) * 12 + (currentDate.month - baseInfo.month)
-    local firstWeekday = C_Calendar.GetMonthInfo(monthOffset).firstWeekday
+_GetDarkmoonFaireLocation = function()
+    local currentMonth, currentYear, daysInCurrentMonth,firstWeekday = CalendarGetMonth()
 
-    local eventLocation = (currentDate.month % 2) == 0 and DMF_LOCATIONS.MULGORE or DMF_LOCATIONS.ELWYNN_FOREST
+    local eventLocation = (currentMonth % 3) + 1
 
-    local dayOfMonth = currentDate.monthDay
+    local dayOfMonth = C_DateAndTime.GetCurrentCalendarTime()["monthDay"]
     if firstWeekday == 1 then
-        -- The 1st is a Sunday
-        if dayOfMonth >= 9 and dayOfMonth < 15 then
+        -- If the 1st is a Sunday, DMF will be week 1
+        if dayOfMonth >= 1 and dayOfMonth < 8 then
             return eventLocation
         end
-    elseif firstWeekday == 2 then
-        -- The 1st is a Monday
-        if dayOfMonth >= 8 and dayOfMonth < 14 then
-            return eventLocation
-        end
-    elseif firstWeekday == 3 then
-        -- The 1st is a Tuesday
-        if dayOfMonth >= 7 and dayOfMonth < 13 then
-            return eventLocation
-        end
-    elseif firstWeekday == 4 then
-        -- The 1st is a Wednesday
-        if dayOfMonth >= 6 and dayOfMonth < 12 then
-            return eventLocation
-        end
-    elseif firstWeekday == 5 then
-        -- The 1st is a Thursday
-        if dayOfMonth >= 5 and dayOfMonth < 11 then
-            return eventLocation
-        end
-    elseif firstWeekday == 6 then
-        -- The 1st is a Friday
-        if dayOfMonth >= 4 and dayOfMonth < 10 then
-            return eventLocation
-        end
-    elseif firstWeekday == 7 then
-        -- The 1st is a Saturday
-        if dayOfMonth >= 10 and dayOfMonth < 16 then
+    else
+        -- Otherwise, it'll be week 2
+        -- If Sunday is the 7th (firstWeekday 2), it goes from 7 to 13
+        -- If Sunday is the 2nd (firstWeekday 7), it goes from 2 to 8
+        if dayOfMonth >= (9-firstWeekday) and dayOfMonth < (16-firstWeekday) then
             return eventLocation
         end
     end
@@ -194,14 +172,23 @@ _LoadDarkmoonFaire = function()
 
     -- TODO: Also handle Terrokar Forest starting with TBC
     local isInMulgore = eventLocation == DMF_LOCATIONS.MULGORE
+    local isInElwynn = eventLocation == DMF_LOCATIONS.ELWYNN_FOREST
+    local locationName = "Shattrath City"
 
     -- The faire is setting up right now or is already up
-    local announcingQuestId = 7905 -- Alliance announcement quest
+    local announcingQuestId = nil
     if isInMulgore then
         announcingQuestId = 7926 -- Horde announcement quest
+        locationName = "Thunder Bluff"
+    elseif isInElwynn then
+        announcingQuestId = 7905 -- Alliance announcement quest
+        locationName = "Goldshire"
     end
-    QuestieCorrections.hiddenQuests[announcingQuestId] = nil
-    QuestieEvent.activeQuests[announcingQuestId] = true
+
+    if announcingQuestId ~= nil then 
+        QuestieCorrections.hiddenQuests[announcingQuestId] = nil
+        QuestieEvent.activeQuests[announcingQuestId] = true
+    end
 
     for _, questData in pairs(QuestieEvent.eventQuests) do
         if questData[1] == "Darkmoon Faire" and not questData[5] then
@@ -210,13 +197,14 @@ _LoadDarkmoonFaire = function()
             QuestieEvent.activeQuests[questId] = true
 
             -- Update the NPC spawns based on the place of the faire
-            for id, data in pairs(QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)) do
+            for id, data in pairs(QuestieNPCFixes:LoadDarkmoonFixes(eventLocation)) do
                 QuestieDB.npcDataOverrides[id] = data
             end
         end
     end
 
-    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")))
+
+    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")).." You can find it outside of "..locationName.."!")
 end
 
 --- Checks wheather the current date is within the given date range

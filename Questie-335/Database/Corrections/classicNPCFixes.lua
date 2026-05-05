@@ -2644,14 +2644,14 @@ function QuestieNPCFixes:LoadFactionFixes()
     end
 end
 
----Updates the NPC spawns to be either in Elwynn Forest or Mulgore
----@param isInMulgore boolean
+---Updates the NPC spawns
+---@param eventLocation integer
 ---@return table<number, any>
-function QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)
+function QuestieNPCFixes:LoadDarkmoonFixes(eventLocation)
     local npcKeys = QuestieDB.npcKeys
     local zoneIDs = ZoneDB.zoneIDs
 
-    if isInMulgore then
+    if eventLocation == 2 then
         return {
             [14828] = {
                 [npcKeys.spawns] = {[zoneIDs.MULGORE]={{37.24,37.67}}},
@@ -2678,7 +2678,7 @@ function QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)
                 [npcKeys.zoneID] = zoneIDs.MULGORE,
             },
         }
-    else
+    elseif eventLocation == 1 then
         return {
             [14828] = {
                 [npcKeys.spawns] = {[zoneIDs.ELWYNN_FOREST]={{41.5,68.87}}},
@@ -2703,6 +2703,33 @@ function QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)
             [14871] = {
                 [npcKeys.spawns] = {[zoneIDs.ELWYNN_FOREST]={{43.34,70.28}}},
                 [npcKeys.zoneID] = zoneIDs.ELWYNN_FOREST,
+            },
+        }
+    elseif eventLocation == 3 then
+        return {
+            [14828] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{34.68,34.36}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+            },
+            [14829] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{34.33,35.73}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+            },
+            [14832] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{34.84,35.15}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+            },
+            [14833] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{33.82,35.96}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+            },
+            [14841] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{34.04,34.82}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+            },
+            [14871] = {
+                [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{33.67,35.93}}},
+                [npcKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
             },
         }
     end
