@@ -12,6 +12,8 @@ local DailyQuests = QuestieLoader:ImportModule("DailyQuests")
 local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+---@type QuestieLib
+local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 
 --- COMPATIBILITY ---
 local C_Map = QuestieCompat.C_Map
