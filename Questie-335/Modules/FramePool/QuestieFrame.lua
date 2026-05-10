@@ -12,6 +12,8 @@ local DailyQuests = QuestieLoader:ImportModule("DailyQuests")
 local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+---@type QuestieLib
+local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 
 --- COMPATIBILITY ---
 local C_Map = QuestieCompat.C_Map
@@ -164,6 +166,25 @@ function _Qframe:OnLeave()
 end
 
 function _Qframe:OnClick(button)
+    -- ＼ʕ •ᴥ•ʔ／ Plain left click = quick LootDB / .findnpc investigate ＼ʕ •ᴥ•ʔ／
+    if button == "LeftButton" and self and self.data and (not IsModifierKeyDown()) and (not ChatEdit_GetActiveWindow()) then
+        local data = self.data
+        local objectiveData = data.ObjectiveData
+        -- Item-type objectives store the item id on the objective itself; ObjectiveTargetId is the source NPC/object.
+        local itemId
+        if objectiveData and objectiveData.Type == "item" then
+            itemId = objectiveData.Id
+        end
+
+        if itemId then
+            QuestieLib:LootDbQuick(itemId, "item")
+        elseif data.Type == "monster" and data.ObjectiveTargetId then
+            QuestieLib:LootDbQuick(data.ObjectiveTargetId, "monster", data.Name)
+        elseif data.Name and data.Name ~= "" then
+            QuestieLib:LootDbQuick(nil, "monster", data.Name)
+        end
+    end
+
     if self and self.UiMapID and WorldMapFrame and WorldMapFrame:IsShown() and not IsModifierKeyDown() and not self.miniMapIcon then
         if button == "RightButton" then
             local currentMapParent = WorldMapFrame:GetMapID()

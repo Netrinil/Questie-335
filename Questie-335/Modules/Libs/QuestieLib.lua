@@ -366,6 +366,31 @@ function QuestieLib:GetRaceString(raceMask)
     end
 end
 
+-- ʕ •ᴥ•ʔ✿ Quick LootDB / .findnpc investigate helper ✿ ʕ •ᴥ•ʔ
+-- kind: "item" -> OpenLootDb(id); "monster"/"npc" -> .findnpc <name> (auto-resolves name from id);
+-- anything else with a name string -> .findnpc <name>
+function QuestieLib:LootDbQuick(id, kind, name)
+    if kind == "item" then
+        if not id or type(OpenLootDb) ~= "function" then return false end
+        OpenLootDb(id)
+        local row = _G["LootDBFrame-SLine-1"]
+        if row and row.Click then row:Click() end
+        if LootDBFrame and LootDBFrame.Hide then LootDBFrame:Hide() end
+        return true
+    end
+
+    if (not name or name == "") and id and (kind == "monster" or kind == "npc") then
+        name = QuestieDB.QueryNPCSingle(id, "name")
+    end
+
+    if name and name ~= "" then
+        SendChatMessage(".findnpc " .. name, "SAY")
+        return true
+    end
+
+    return false
+end
+
 function QuestieLib:CacheItemNames(questId)
     local quest = QuestieDB.GetQuest(questId)
     if (quest and quest.ObjectiveData) then

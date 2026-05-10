@@ -1052,6 +1052,19 @@ TrackerLinePool.OnClickQuest = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
+    -- ʕ •ᴥ•ʔ✿ Objective line: plain left = quick investigate, alt+left = open quest log ✿ ʕ •ᴥ•ʔ
+    local objective = self.Objective
+    if button == "LeftButton" and self.mode == "objective" and type(objective) == "table" and objective.Type then
+        if IsAltKeyDown() and (not IsShiftKeyDown()) and (not IsControlKeyDown()) then
+            TrackerUtils:ShowQuestLog(self.Quest)
+            return
+        end
+        if (not IsAltKeyDown()) and (not IsShiftKeyDown()) and (not IsControlKeyDown()) then
+            QuestieLib:LootDbQuick(objective.Id, objective.Type)
+            return
+        end
+    end
+
     if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindSetTomTom, button) then
         local spawn, zone, name = QuestieMap:GetNearestQuestSpawn(self.Quest)
         if spawn then
