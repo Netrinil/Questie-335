@@ -166,6 +166,16 @@ function _Qframe:OnLeave()
 end
 
 function _Qframe:OnClick(button)
+    -- ＼ʕ •ᴥ•ʔ／ Plain left click = quick LootDB / .findnpc investigate ＼ʕ •ᴥ•ʔ／
+    if button == "LeftButton" and self and self.data and (not IsModifierKeyDown()) and (not ChatEdit_GetActiveWindow()) then
+        local data = self.data
+        if data.Type == "available" or data.Type == "complete" or data.Type == "manual" then
+            QuestieLib:LootDbQuick(nil, "monster", data.Name)
+        elseif data.Type and data.ObjectiveTargetId then
+            QuestieLib:LootDbQuick(data.ObjectiveTargetId, data.Type, data.Name)
+        end
+    end
+
     if self and self.UiMapID and WorldMapFrame and WorldMapFrame:IsShown() and not IsModifierKeyDown() and not self.miniMapIcon then
         if button == "RightButton" then
             local currentMapParent = WorldMapFrame:GetMapID()
