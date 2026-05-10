@@ -169,10 +169,19 @@ function _Qframe:OnClick(button)
     -- ＼ʕ •ᴥ•ʔ／ Plain left click = quick LootDB / .findnpc investigate ＼ʕ •ᴥ•ʔ／
     if button == "LeftButton" and self and self.data and (not IsModifierKeyDown()) and (not ChatEdit_GetActiveWindow()) then
         local data = self.data
-        if data.Type == "available" or data.Type == "complete" or data.Type == "manual" then
+        local objectiveData = data.ObjectiveData
+        -- Item-type objectives store the item id on the objective itself; ObjectiveTargetId is the source NPC/object.
+        local itemId
+        if objectiveData and objectiveData.Type == "item" then
+            itemId = objectiveData.Id
+        end
+
+        if itemId then
+            QuestieLib:LootDbQuick(itemId, "item")
+        elseif data.Type == "monster" and data.ObjectiveTargetId then
+            QuestieLib:LootDbQuick(data.ObjectiveTargetId, "monster", data.Name)
+        elseif data.Name and data.Name ~= "" then
             QuestieLib:LootDbQuick(nil, "monster", data.Name)
-        elseif data.Type and data.ObjectiveTargetId then
-            QuestieLib:LootDbQuick(data.ObjectiveTargetId, data.Type, data.Name)
         end
     end
 
