@@ -27,6 +27,11 @@ function QuestieMap.utils:SetDrawOrder(frame)
         local frameLevel = WorldMapFrame:GetFrameLevel() + 7
         local frameStrata = WorldMapFrame:GetFrameStrata()
         frame:SetParent(WorldMapFrame)
+        if IsAddOnLoaded("Magnify") or IsAddOnLoaded("Magnify-WotLK") then
+            frameLevel = WorldMapButton:GetFrameLevel() + 7
+            frameStrata = WorldMapButton:GetFrameStrata()
+            frame:SetParent(WorldMapButton)
+        end
         frame:SetFrameStrata(frameStrata)
         frame:SetFrameLevel(frameLevel)
     end
