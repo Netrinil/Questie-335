@@ -37,21 +37,7 @@ ZoneDB.zoneIDs = ZoneDB.private.zoneIDs or {}
 
 -- Overrides for UiMapId to AreaId
 local UiMapIdOverrides = {
-    [246] = 3713,
-    [2366] = 273,
-    [2367] = 274,
-    [2368] = 274,
-    [2369] = 274,
-    [2370] = 274,
-    [2371] = 274,
-    [2372] = 274,
-    [2373] = 274,
-    [2374] = 274,
-    [2375] = 274,
-    [2376] = 274,
-    [2377] = 274,
-    [2378] = 274,
-    [2379] = 274,
+    [246] = 3713
 }
 local parentZoneToSubZone = {} -- Generated
 local zoneMap = {} -- Generated
@@ -127,8 +113,7 @@ function ZoneDB:GetAreaIdByUiMapId(uiMapId)
                 return areaId
             end
         end
-
-        --error("No AreaId found for UiMapId: " .. uiMapId .. ":" .. C_Map.GetMapInfo(uiMapId).name)
+        error("No AreaId found for UiMapId: " .. uiMapId .. ":" .. C_Map.GetMapInfo(uiMapId).name)
     end
 end
 
