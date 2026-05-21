@@ -86,7 +86,26 @@ function QuestieEvent:Load()
     
     for eventIndex = 1, CalendarGetNumDayEvents(0,currentDate) do
         local eventName = CalendarGetDayEvent(0,currentDate,eventIndex)
-        if (eventName == "Kalu'ak Fishing Derby" or eventName == "Stranglethorn Fishing Extravaganza") then 
+        
+        if eventName ~= l10n("Lunar Festival") and
+        eventName ~= l10n("Love is in the Air") and
+        eventName ~= l10n("Noblegarden") and
+        eventName ~= l10n("Children's Week") and 
+        eventName ~= l10n("Hallow's End") and
+        eventName ~= l10n("Brewfest") and
+        eventName ~= l10n("Harvest Festival") and
+        eventName ~= l10n("Pilgrim's Bounty") and
+        eventName ~= l10n("Pirate's Day") and
+        eventName ~= l10n("Day of the Dead") and
+        eventName ~= l10n("Midsummer") and
+        eventName ~= l10n("Feast of Winter Veil") and
+        eventName ~= l10n("Darkmoon Faire") and
+        eventName ~= l10n("Kalu'ak Fishing Derby") and
+        eventName ~= l10n("Stranglethorn Fishing Extravaganza") then
+            return
+        end
+
+        if (eventName == l10n("Kalu'ak Fishing Derby") or eventName == l10n("Stranglethorn Fishing Extravaganza")) then
             if (hour >= 2 and hour < 14) then
                 print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
                 activeEvents[eventName] = true
@@ -204,7 +223,7 @@ _LoadDarkmoonFaire = function()
     end
 
 
-    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")).." You can find it outside of "..locationName.."!")
+    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")).." You can find it outside of "..l10n(locationName).."!")
 end
 
 --- Checks wheather the current date is within the given date range
