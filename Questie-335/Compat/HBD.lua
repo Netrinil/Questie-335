@@ -423,11 +423,17 @@ end
 local function UpdateMinimapZoom()
     if not MinimapRadiusAPI then
         local zoom = pins.Minimap:GetZoom()
+        local insideZoom = GetCVar("minimapInsideZoom")
+        local outsideZoom = GetCVar("minimapZoom")
         if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
             pins.Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)
         end
         indoors = GetCVar("minimapZoom")+0 == pins.Minimap:GetZoom() and "outdoor" or "indoor"
-        pins.Minimap:SetZoom(zoom)
+        if indoors == "indoor" then
+            pins.Minimap:SetZoom(insideZoom)
+        else
+            pins.Minimap:SetZoom(outsideZoom)
+        end
     end
 end
 
